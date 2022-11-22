@@ -1,0 +1,9 @@
+apply from: "$project.rootDir/gradle/android-library.gradle"
+
+android {
+    namespace 'com.rappi.feature_b.api'
+}
+
+dependencies {
+    implementation project(':navigation')
+}

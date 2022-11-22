@@ -1,0 +1,29 @@
+apply from: "$project.rootDir/gradle/android-library.gradle"
+
+android {
+    namespace 'com.rappi.feature_c.impl'
+
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    implementation project(':common')
+    implementation project(':navigation')
+    implementation project(':featureC:api')
+    // Compose
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.runtime:runtime:$compose_ui_version"
+    implementation "androidx.compose.material:material:$material_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation "androidx.activity:activity-compose:$activity_compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+
+    // Navigation Compose
+    implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
+    implementation "com.google.accompanist:accompanist-navigation-animation:$navigation_animation_version"
+
+    // Dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+}

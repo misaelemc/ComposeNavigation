@@ -1,0 +1,23 @@
+apply from: "$project.rootDir/gradle/android-library.gradle"
+
+android {
+    namespace 'com.rappi.common'
+
+    buildFeatures {
+        compose true
+    }
+}
+
+dependencies {
+    implementation "androidx.core:core-ktx:$kotlin_core_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$view_model_version"
+
+    // Compose
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.runtime:runtime:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+
+    // Dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+}
