@@ -17,8 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.rappi.featureA.api.FeatureAEntry
-import com.rappi.featureB.api.FeatureBEntry
+import com.rappi.movie.api.MovieEntry
+import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.featureC.api.FeatureCEntry
 import com.rappi.navigation.NavDestinations
 import com.rappi.navigation.entry
@@ -59,12 +59,12 @@ class MainActivity : ComponentActivity() {
         ModalBottomSheetLayout(bottomSheetNavigator) {
             NavHost(
                 navController,
-                startDestination = destinations.entry<FeatureAEntry>().featureRoute
+                startDestination = destinations.entry<MovieEntry>().featureRoute
             ) {
-                with(destinations.entry<FeatureAEntry>()) {
+                with(destinations.entry<MovieEntry>()) {
                     composable(navController, destinations, sheetState)
                 }
-                with(destinations.entry<FeatureBEntry>()) {
+                with(destinations.entry<MovieDetailEntry>()) {
                     composable(navController, destinations, sheetState)
                 }
                 with(destinations.entry<FeatureCEntry>()) {

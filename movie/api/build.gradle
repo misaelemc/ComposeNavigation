@@ -1,0 +1,10 @@
+apply from: "$project.rootDir/gradle/android-library.gradle"
+
+android {
+    namespace 'com.rappi.movie.api'
+}
+
+dependencies {
+    implementation project(':navigation')
+    implementation("com.google.code.gson:gson:$gson_version")
+}

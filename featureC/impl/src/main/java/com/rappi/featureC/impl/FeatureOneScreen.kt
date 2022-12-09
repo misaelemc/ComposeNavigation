@@ -26,9 +26,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FeatureOneScreen(onClickNavigation: () -> Unit, onBackClick: () -> Unit) {
+fun FeatureOneScreen(
+    comesFrom: String,
+    onClickNavigation: () -> Unit,
+    onBackClick: () -> Unit
+) {
     InternalScaffold(
-        title = "Feature One Screen",
+        title = "Back to $comesFrom",
         textBody = "Navigate internally to feature two",
         textButton = "Feature Two Screen",
         onBackClick = onBackClick,
@@ -95,6 +99,6 @@ internal fun InternalScaffold(
 @Composable
 internal fun PreviewFeatureOneScreen() {
     MaterialTheme {
-        FeatureOneScreen(onClickNavigation = {}, onBackClick = {})
+        FeatureOneScreen("Feature B", onClickNavigation = {}, onBackClick = {})
     }
 }

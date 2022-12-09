@@ -6,4 +6,5 @@ android {
 
 dependencies {
     implementation project(':navigation')
+    implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
 }

@@ -25,6 +25,7 @@ class FeatureCEntryImpl @Inject constructor() : FeatureCEntry() {
                 deepLinks = deepLinks
             ) {
                 FeatureOneScreen(
+                    comesFrom = it.arguments?.getString(FROM).orEmpty(),
                     onClickNavigation = {
                         navController.navigate(FEATURE_2_ROUTE)
                     },
@@ -39,7 +40,6 @@ class FeatureCEntryImpl @Inject constructor() : FeatureCEntry() {
             ) {
                 FeatureTwoScreen(onBackClick = { navController.popBackStack() })
             }
-
         }
     }
 }

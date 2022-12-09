@@ -51,10 +51,10 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':navigation')
-    implementation project(':featureA:api')
-    implementation project(':featureA:impl')
-    implementation project(':featureB:api')
-    implementation project(':featureB:impl')
+    implementation project(':movie:api')
+    implementation project(':movie:impl')
+    implementation project(':movie-detail:api')
+    implementation project(':movie-detail:impl')
     implementation project(':featureC:api')
     implementation project(':featureC:impl')
 
@@ -80,4 +80,14 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$dagger_android_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_android_version"
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
+
+    // Retrofit-OkHttp
+    implementation("com.google.code.gson:gson:$gson_version")
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+    implementation("com.squareup.okhttp3:okhttp:$http_version")
+    implementation("com.squareup.okhttp3:logging-interceptor:$http_version")
 }
