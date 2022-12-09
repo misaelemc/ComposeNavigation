@@ -92,20 +92,20 @@ fun MovieList(
                     item { LoadingItem() }
                 }
                 loadState.refresh is LoadState.Error -> {
-                    val e = lazyMovieItems.loadState.refresh as LoadState.Error
+                    val stateError = lazyMovieItems.loadState.refresh as LoadState.Error
                     item {
                         ErrorItem(
-                            message = e.error.localizedMessage!!,
+                            message = stateError.error.localizedMessage!!,
                             modifier = Modifier.fillParentMaxSize(),
                             onClickRetry = { retry() }
                         )
                     }
                 }
                 loadState.append is LoadState.Error -> {
-                    val e = lazyMovieItems.loadState.append as LoadState.Error
+                    val stateError = lazyMovieItems.loadState.append as LoadState.Error
                     item {
                         ErrorItem(
-                            message = e.error.localizedMessage!!,
+                            message = stateError.error.localizedMessage!!,
                             onClickRetry = { retry() }
                         )
                     }

@@ -92,7 +92,14 @@ fun MovieDetailContent(movie: Movie, modifier: Modifier = Modifier) {
         )
 
         Column(Modifier.verticalScroll(rememberScrollState())) {
-            MovieDetailDescription(description = movie.overview!!)
+            movie.overview?.let {
+                Text(
+                    modifier = Modifier.padding(all = 16.dp),
+                    text = it,
+                    letterSpacing = 2.sp,
+                    color = MaterialTheme.colors.onBackground
+                )
+            }
         }
     }
 }
@@ -114,15 +121,5 @@ fun MovieDetailImage(
         modifier = modifier,
         contentDescription = "Movie Detail Poster",
         contentScale = ContentScale.Crop
-    )
-}
-
-@Composable
-fun MovieDetailDescription(description: String) {
-    Text(
-        modifier = Modifier.padding(all = 16.dp),
-        text = description,
-        letterSpacing = 2.sp,
-        color = MaterialTheme.colors.onBackground
     )
 }
