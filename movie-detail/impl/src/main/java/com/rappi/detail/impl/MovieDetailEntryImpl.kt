@@ -13,8 +13,9 @@ import com.rappi.detail.impl.di.MovieDetailComponent
 import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
 import com.rappi.navigation.NavDestinations
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 @OptIn(ExperimentalMaterialApi::class)
 class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
 
@@ -25,9 +26,12 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
         backStackEntry: NavBackStackEntry,
         sheetState: ModalBottomSheetState
     ) {
-        val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>().build()
+        val movieId = backStackEntry.arguments?.getInt(ID, -1) ?: -1
+        val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
+            .createMovieDetailFactory()
+            .create(movieId)
+
         MovieDetailScreen(
-            movieId = backStackEntry.arguments?.getInt(ID, -1) ?: -1,
             viewModel = daggerViewModel { component.movieDetailViewModel },
             onBackPressed = { navController.popBackStack() }
         )

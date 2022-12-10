@@ -38,12 +38,10 @@ import com.rappi.movie.api.domain.model.Movie
 
 @Composable
 fun MovieDetailScreen(
-    movieId: Int,
     viewModel: MovieDetailViewModel,
     onBackPressed: () -> Unit,
 ) {
-    val viewState by viewModel.viewStateFlow.collectAsState()
-    viewModel.fetchMovie(movieId)
+    val viewState by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
@@ -70,7 +68,7 @@ fun MovieDetailScreen(
                 UIState.ERROR -> {
                     ErrorItem(
                         message = "Error occurred",
-                        onClickRetry = { viewModel.fetchMovie(movieId) }
+                        onClickRetry = { }
                     )
                 }
                 UIState.IDLE -> {
@@ -119,7 +117,7 @@ fun MovieDetailImage(
     Image(
         painter = painter,
         modifier = modifier,
-        contentDescription = "Movie Detail Poster",
+        contentDescription = null,
         contentScale = ContentScale.Crop
     )
 }

@@ -8,9 +8,11 @@ import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
 import com.squareup.anvil.annotations.ContributesSubcomponent
 import com.squareup.anvil.annotations.ContributesTo
+import dagger.BindsInstance
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Qualifier
 
 @SingleIn(FeatureScope::class)
 @ContributesSubcomponent(
@@ -23,7 +25,14 @@ interface MovieDetailComponent {
 
     @ContributesTo(AppScope::class)
     interface ParentComponent {
-        fun build(): MovieDetailComponent
+
+        fun createMovieDetailFactory(): Factory
+    }
+
+    @ContributesSubcomponent.Factory
+    interface Factory {
+
+        fun create(@BindsInstance @MovieId movieId: Int): MovieDetailComponent
     }
 }
 
@@ -37,6 +46,11 @@ object MovieDetailModule {
 
     @Provides
     fun provideMovieDetailViewModel(
-        fetchMovieItemUC: FetchMovieItemUC
-    ): MovieDetailViewModel = MovieDetailViewModel(fetchMovieItemUC)
+        @MovieId movieId: Int,
+        fetchMovieItemUC: FetchMovieItemUC,
+    ): MovieDetailViewModel = MovieDetailViewModel(movieId, fetchMovieItemUC)
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class MovieId
