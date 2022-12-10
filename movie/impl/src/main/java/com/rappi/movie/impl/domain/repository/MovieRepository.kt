@@ -1,6 +1,7 @@
 package com.rappi.movie.impl.domain.repository
 
-import com.rappi.movie.impl.data.model.MovieListResponse
+import com.rappi.movie.api.data.model.MovieListResponse
+
 
 interface MovieRepository {
 

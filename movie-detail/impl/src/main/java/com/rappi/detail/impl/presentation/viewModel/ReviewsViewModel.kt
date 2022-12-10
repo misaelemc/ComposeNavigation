@@ -4,16 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rappi.common.domain.model.UIState
 import com.rappi.common.domain.model.UIStateResponse
-import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
+import com.rappi.detail.impl.domain.usecase.FetchReviewsByIdUC
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class MovieDetailViewModel constructor(
+class ReviewsViewModel constructor(
     movieId: Int,
-    fetchMovieItemUC: FetchMovieItemUC
+    fetchReviewsByIdUC: FetchReviewsByIdUC
 ) : ViewModel() {
 
-    val state = fetchMovieItemUC.fetchMovieById(movieId)
+    val state = fetchReviewsByIdUC.invoke(movieId)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

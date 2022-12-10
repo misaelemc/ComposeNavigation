@@ -20,6 +20,8 @@ abstract class MovieDetailEntry : ComposableFeatureEntry {
 
     companion object {
         const val ID = "id"
+        const val DETAIL = "detail"
+        const val REVIEW = "review"
         private const val ROUTE = "movie-detail"
     }
 }

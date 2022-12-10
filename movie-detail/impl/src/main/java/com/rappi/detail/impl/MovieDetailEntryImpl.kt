@@ -33,7 +33,8 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
 
         MovieDetailScreen(
             viewModel = daggerViewModel { component.movieDetailViewModel },
-            onBackPressed = { navController.popBackStack() }
+            onBackPressed = { navController.popBackStack() },
+            onReviewsClicked = { navController.navigate(REVIEW) }
         )
     }
 }

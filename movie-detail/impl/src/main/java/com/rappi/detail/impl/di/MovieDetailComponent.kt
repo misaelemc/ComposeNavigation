@@ -5,7 +5,9 @@ import com.rappi.common.FeatureScope
 import com.rappi.common.SingleIn
 import com.rappi.detail.impl.data.datasource.remote.MovieDetailService
 import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
+import com.rappi.detail.impl.domain.usecase.FetchReviewsByIdUC
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
+import com.rappi.detail.impl.presentation.viewModel.ReviewsViewModel
 import com.squareup.anvil.annotations.ContributesSubcomponent
 import com.squareup.anvil.annotations.ContributesTo
 import dagger.BindsInstance
@@ -20,6 +22,8 @@ import javax.inject.Qualifier
     parentScope = AppScope::class
 )
 interface MovieDetailComponent {
+
+    val reviewsViewModel: ReviewsViewModel
 
     val movieDetailViewModel: MovieDetailViewModel
 
@@ -49,6 +53,12 @@ object MovieDetailModule {
         @MovieId movieId: Int,
         fetchMovieItemUC: FetchMovieItemUC,
     ): MovieDetailViewModel = MovieDetailViewModel(movieId, fetchMovieItemUC)
+
+    @Provides
+    fun provideReviewsViewModel(
+        @MovieId movieId: Int,
+        fetchReviewsByIdUC: FetchReviewsByIdUC,
+    ): ReviewsViewModel = ReviewsViewModel(movieId, fetchReviewsByIdUC)
 }
 
 @Qualifier

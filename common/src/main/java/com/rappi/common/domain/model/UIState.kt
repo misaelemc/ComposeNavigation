@@ -6,3 +6,8 @@ enum class UIState {
     ERROR,
     CONTENT
 }
+
+data class UIStateResponse<T>(
+    val data: T? = null,
+    val state: UIState
+)
