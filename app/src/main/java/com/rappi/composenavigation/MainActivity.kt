@@ -4,32 +4,30 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SwipeableDefaults
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
-import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.rappi.movie.api.MovieEntry
-import com.rappi.detail.api.MovieDetailEntry
-import com.rappi.featureC.api.FeatureCEntry
+import androidx.lifecycle.ViewModelProvider
+import com.rappi.movie.impl.presentation.presenter.MovieListScreen
 import com.rappi.navigation.NavDestinations
-import com.rappi.navigation.entry
+import com.slack.circuit.CircuitCompositionLocals
+import com.slack.circuit.CircuitConfig
+import com.slack.circuit.NavigableCircuitContent
+import com.slack.circuit.Screen
+import com.slack.circuit.backstack.rememberSaveableBackStack
+import com.slack.circuit.push
+import com.slack.circuit.rememberCircuitNavigator
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-@OptIn(
-    ExperimentalMaterialApi::class,
-    ExperimentalMaterialNavigationApi::class
-)
 class MainActivity : ComponentActivity() {
+
+
+    @Inject
+    lateinit var viewModelProviderFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var circuitConfig: CircuitConfig
 
     @Inject
     lateinit var destinations: NavDestinations
@@ -37,38 +35,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+
+        var backstack: List<Screen> = listOf(MovieListScreen)
         setContent {
             MaterialTheme {
+
                 Scaffold(Modifier.fillMaxSize()) {
-                    AppNavHost()
-                }
-            }
-        }
-    }
+                    val backstack =
+                        rememberSaveableBackStack { backstack.forEach { screen -> push(screen) } }
 
-    @Composable
-    private fun AppNavHost() {
-        val bottomSheetNavigator = rememberBottomSheetNavigator()
-        val navController = rememberNavController(bottomSheetNavigator)
+                    val circuitNavigator = rememberCircuitNavigator(backstack = backstack)
 
-        val sheetState = rememberModalBottomSheetState(
-            ModalBottomSheetValue.Hidden,
-            SwipeableDefaults.AnimationSpec,
-        )
-
-        ModalBottomSheetLayout(bottomSheetNavigator) {
-            NavHost(
-                navController,
-                startDestination = destinations.entry<MovieEntry>().featureRoute
-            ) {
-                with(destinations.entry<MovieEntry>()) {
-                    composable(navController, destinations, sheetState)
-                }
-                with(destinations.entry<MovieDetailEntry>()) {
-                    composable(navController, destinations, sheetState)
-                }
-                with(destinations.entry<FeatureCEntry>()) {
-                    navigation(navController, destinations, sheetState)
+                    CircuitCompositionLocals(circuitConfig = circuitConfig) {
+                        NavigableCircuitContent(circuitNavigator, backstack)
+                    }
                 }
             }
         }
