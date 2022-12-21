@@ -1,6 +1,3 @@
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'com.squareup.anvil'
 
 android {
     compileSdk rootProject.ext.compile_sdk_version
@@ -23,10 +20,6 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
-}
-
-anvil {
-    generateDaggerFactories = true
 }
