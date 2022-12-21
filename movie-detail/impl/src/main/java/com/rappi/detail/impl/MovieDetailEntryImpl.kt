@@ -6,11 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import com.rappi.common.ComponentHolder
-import com.rappi.common.daggerViewModel
 import com.rappi.detail.api.MovieDetailEntry
-import com.rappi.detail.impl.di.MovieDetailComponent
-import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
 import com.rappi.navigation.NavDestinations
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -27,14 +23,14 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
         sheetState: ModalBottomSheetState
     ) {
         val movieId = backStackEntry.arguments?.getInt(ID, -1) ?: -1
-        val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
+      /*  val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
             .createMovieDetailFactory()
-            .create(movieId)
+            .create(movieId)*/
 
-        MovieDetailScreen(
+       /* MovieDetailScreen(
             viewModel = daggerViewModel { component.movieDetailViewModel },
             onBackPressed = { navController.popBackStack() },
             onReviewsClicked = { navController.navigate(REVIEW) }
-        )
+        )*/
     }
 }

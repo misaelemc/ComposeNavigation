@@ -1,7 +1,7 @@
-package com.rappi.movie.impl.presentation.screen
+package com.rappi.detail.impl.presentation.screen
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,116 +11,105 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.rappi.common.AppScope
 import com.rappi.common.IMAGE_URL_PATH
 import com.rappi.common.presentation.widget.ErrorItem
-import com.rappi.common.presentation.widget.LoadingItem
 import com.rappi.common.presentation.widget.LoadingView
-import com.rappi.movie.api.domain.model.Movie
-import com.rappi.movie.impl.presentation.viewModel.MovieViewModel
+import com.rappi.detail.impl.domain.model.Review
+import com.rappi.detail.impl.presentation.presenter.ReviewsScreen
+import com.slack.circuit.codegen.annotations.CircuitInject
 
+@CircuitInject(ReviewsScreen::class, AppScope::class)
 @Composable
-fun MovieScreen(
-    viewModel: MovieViewModel,
-    onMovieItemClick: (Int) -> Unit,
+fun ReviewsUi(
+    state: ReviewsScreen.ReviewsState,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
+                title = {
+                    Text(
+                        text = "Reviews",
+                        style = MaterialTheme.typography.h6
+                    )
+                },
                 contentColor = Color.Black,
                 backgroundColor = Color.White,
-            ) {
-                Text(
-                    text = "Most Popular Movies",
-                    style = MaterialTheme.typography.h6
-                )
-            }
+                navigationIcon = {
+                    IconButton(onClick = { state.eventSink.invoke(ReviewsScreen.Event.OnBackPressed) }) {
+                        Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
+                    }
+                }
+            )
         },
     ) { paddingValues ->
-        MovieList(
-            viewModel = viewModel,
+        ReviewContent(
+            state = state,
             paddingValues = paddingValues,
-            onMovieItemClick = onMovieItemClick
         )
     }
 }
 
 @Composable
-fun MovieList(
-    viewModel: MovieViewModel,
-    paddingValues: PaddingValues,
-    onMovieItemClick: (Int) -> Unit,
-) {
-    val lazyMovieItems = viewModel.movies.collectAsLazyPagingItems()
+fun ReviewContent(state: ReviewsScreen.ReviewsState, paddingValues: PaddingValues) {
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = paddingValues.calculateBottomPadding()),
-    ) {
-        items(lazyMovieItems) { movie ->
-            MovieItem(movie = movie!!, onMovieItemClick = {
-                onMovieItemClick(movie.id)
-            })
-            Divider()
-        }
-
-        lazyMovieItems.apply {
-            when {
-                loadState.refresh is LoadState.Loading -> {
-                    item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
-                }
-                loadState.append is LoadState.Loading -> {
-                    item { LoadingItem() }
-                }
-                loadState.refresh is LoadState.Error -> {
-                    val stateError = lazyMovieItems.loadState.refresh as LoadState.Error
-                    item {
-                        ErrorItem(
-                            message = stateError.error.localizedMessage!!,
-                            modifier = Modifier.fillParentMaxSize(),
-                            onClickRetry = { retry() }
-                        )
-                    }
-                }
-                loadState.append is LoadState.Error -> {
-                    val stateError = lazyMovieItems.loadState.append as LoadState.Error
-                    item {
-                        ErrorItem(
-                            message = stateError.error.localizedMessage!!,
-                            onClickRetry = { retry() }
-                        )
-                    }
-                }
+    Crossfade(state) { uiState ->
+        when (uiState) {
+            is ReviewsScreen.ReviewsState.Loading -> LoadingView(modifier = Modifier.fillMaxSize())
+            is ReviewsScreen.ReviewsState.Success -> ReviewsList(uiState.reviews, paddingValues)
+            is ReviewsScreen.ReviewsState.NoReviews -> {
+                ErrorItem(
+                    message = "Error occurred",
+                    onClickRetry = { }
+                )
             }
+
         }
     }
 }
 
 @Composable
-fun MovieItem(movie: Movie, onMovieItemClick: () -> Unit) {
+fun ReviewsList(items: List<Review>, paddingValues: PaddingValues) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = paddingValues.calculateBottomPadding()),
+    ) {
+        items(items) { review ->
+            ReviewItem(review = review)
+            Divider()
+        }
+    }
+}
+
+@Composable
+fun ReviewItem(review: Review) {
     Surface(
         color = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.onBackground,
-        modifier = Modifier.clickable(onClick = onMovieItemClick)
     ) {
         Column {
             Row(
@@ -130,8 +119,8 @@ fun MovieItem(movie: Movie, onMovieItemClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                MovieImage(
-                    movie.backdropUrl.orEmpty(),
+                ReviewImage(
+                    imageUrl = review.avatar.orEmpty(),
                     modifier = Modifier.size(120.dp)
                 )
                 Column(
@@ -140,19 +129,17 @@ fun MovieItem(movie: Movie, onMovieItemClick: () -> Unit) {
                         .padding(start = 16.dp)
                 ) {
                     Text(
-                        text = movie.title,
+                        text = review.name,
                         maxLines = 2,
                         style = MaterialTheme.typography.h6,
                         overflow = TextOverflow.Ellipsis
                     )
-                    if (movie.overview != null) {
-                        Text(
-                            text = movie.overview!!,
-                            maxLines = 3,
-                            style = MaterialTheme.typography.body1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                    Text(
+                        text = review.content,
+                        maxLines = 3,
+                        style = MaterialTheme.typography.body1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }
@@ -160,7 +147,7 @@ fun MovieItem(movie: Movie, onMovieItemClick: () -> Unit) {
 }
 
 @Composable
-fun MovieImage(
+fun ReviewImage(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
@@ -173,8 +160,8 @@ fun MovieImage(
 
     Image(
         painter = painter,
-        modifier = modifier,
-        contentDescription = "Movie Item Image",
+        modifier = modifier.clip(CircleShape),
+        contentDescription = null,
         contentScale = ContentScale.Crop
     )
 }

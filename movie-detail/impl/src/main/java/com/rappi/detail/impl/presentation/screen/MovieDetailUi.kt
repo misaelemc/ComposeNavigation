@@ -2,6 +2,7 @@ package com.rappi.detail.impl.presentation.screen
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -34,44 +33,48 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.rappi.common.AppScope
 import com.rappi.common.IMAGE_URL_PATH
 import com.rappi.common.LARGE_IMAGE_URL_PATH
-import com.rappi.common.domain.model.UIState
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingView
-import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
-import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
+import com.rappi.detail.api.MovieDetail
+import com.rappi.detail.api.MovieDetailScreen
 import com.rappi.movie.api.domain.model.Movie
+import com.slack.circuit.codegen.annotations.CircuitInject
 
+@CircuitInject(MovieDetailScreen::class, AppScope::class)
 @Composable
-fun MovieDetailScreen(
-    viewModel: MovieDetailViewModel,
-    onBackPressed: () -> Unit,
-    onReviewsClicked: () -> Unit,
+fun MovieDetailUi(
+    movieDetailState: MovieDetailScreen.State
 ) {
-    val viewState by viewModel.state.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = viewState.data?.movie?.title ?: "",
+                        text = if (movieDetailState is MovieDetailScreen.State.Success) movieDetailState.movieDetail.movie.title else "",
                         style = MaterialTheme.typography.h6
                     )
                 },
                 contentColor = Color.Black,
                 backgroundColor = Color.White,
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
+                    IconButton(onClick = { movieDetailState.eventSink(MovieDetailScreen.MovieEvent.OnBackPressed) }) {
                         Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = onReviewsClicked) {
+                    IconButton(onClick = {
+                        movieDetailState.eventSink(
+                            MovieDetailScreen.MovieEvent.OpenReview(
+                                1
+                            )
+                        )
+                    }) {
                         Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
                     }
                 }
@@ -80,18 +83,24 @@ fun MovieDetailScreen(
         modifier = Modifier.statusBarsPadding(),
     ) {
         val modifier = Modifier.padding(it)
-        Crossfade(viewState.state) { uiState ->
+        Crossfade(movieDetailState) { uiState ->
             when (uiState) {
-                UIState.LOADING -> LoadingView(modifier = modifier.fillMaxSize())
-                UIState.CONTENT -> MovieDetailContent(viewState.data!!, modifier = modifier)
-                UIState.ERROR -> {
+                is MovieDetailScreen.State.Loading -> LoadingView(modifier = modifier.fillMaxSize())
+                is MovieDetailScreen.State.Success -> MovieDetailContent(
+                    uiState.movieDetail,
+                    modifier = modifier
+                ) { recommendedId ->
+                    uiState.successEventSink.invoke(
+                        MovieDetailScreen.State.Success.SuccessMovieEvent.OpenRecommended(
+                            recommendedId
+                        )
+                    )
+                }
+                is MovieDetailScreen.State.EmptyMovie -> {
                     ErrorItem(
                         message = "Error occurred",
                         onClickRetry = { }
                     )
-                }
-                UIState.IDLE -> {
-                    // do nothing
                 }
             }
         }
@@ -99,19 +108,23 @@ fun MovieDetailScreen(
 }
 
 @Composable
-fun MovieDetailContent(data: FetchMovieItemUC.MovieDetail, modifier: Modifier = Modifier) {
+fun MovieDetailContent(
+    detail: MovieDetail,
+    modifier: Modifier = Modifier,
+    onRecommendedClicked: (Int) -> Unit
+) {
     Column(
         modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
         MovieDetailImage(
-            imageUrl = "$LARGE_IMAGE_URL_PATH/${data.movie.backdropUrl.orEmpty()}" ,
+            imageUrl = "$LARGE_IMAGE_URL_PATH/${detail.movie.backdropUrl.orEmpty()}",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
         )
-        data.movie.overview?.let {
+        detail.movie.overview?.let {
             Text(
                 modifier = Modifier.padding(all = 16.dp),
                 text = it,
@@ -119,7 +132,7 @@ fun MovieDetailContent(data: FetchMovieItemUC.MovieDetail, modifier: Modifier = 
                 style = MaterialTheme.typography.body1,
             )
         }
-        if (data.recommended.isNotEmpty()) {
+        if (detail.recommended.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(all = 16.dp),
                 text = "Recommendations",
@@ -130,8 +143,8 @@ fun MovieDetailContent(data: FetchMovieItemUC.MovieDetail, modifier: Modifier = 
                 modifier = Modifier.padding(bottom = 16.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp)
             ) {
-                items(data.recommended) {
-                    MovieCard(it)
+                items(detail.recommended) {
+                    MovieCard(it, onRecommendedClicked)
                     Spacer(modifier = Modifier.width(10.dp))
                 }
             }
@@ -160,10 +173,12 @@ fun MovieDetailImage(
 }
 
 @Composable
-fun MovieCard(movie: Movie) {
-    Column(modifier = Modifier.width(140.dp)) {
+fun MovieCard(movie: Movie, onClick: (Int) -> Unit) {
+    Column(modifier = Modifier
+        .width(140.dp)
+        .clickable { onClick.invoke(movie.id) }) {
         MovieDetailImage(
-            imageUrl = "$IMAGE_URL_PATH/${movie.backdropUrl.orEmpty()}" ,
+            imageUrl = "$IMAGE_URL_PATH/${movie.backdropUrl.orEmpty()}",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)

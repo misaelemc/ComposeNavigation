@@ -1,6 +1,6 @@
 package com.rappi.movie.impl.data.repository
 
-import com.rappi.common.FeatureScope
+import com.rappi.common.AppScope
 import com.rappi.movie.api.data.model.MovieListResponse
 import com.rappi.movie.impl.data.datasource.remote.MovieService
 import com.rappi.movie.impl.domain.repository.MovieRepository
@@ -9,7 +9,7 @@ import dagger.Reusable
 import javax.inject.Inject
 
 @Reusable
-@ContributesBinding(scope = FeatureScope::class, boundType = MovieRepository::class)
+@ContributesBinding(scope = AppScope::class, boundType = MovieRepository::class)
 class MovieRepositoryImpl @Inject constructor(private val api: MovieService): MovieRepository {
 
     override suspend fun fetchMovies(
