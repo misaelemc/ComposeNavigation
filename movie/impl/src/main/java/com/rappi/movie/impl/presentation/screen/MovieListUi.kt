@@ -97,36 +97,6 @@ fun MovieList(
             })
             Divider()
         }
-
-        /*  lazyMovieItems.apply {
-              when {
-                  loadState.refresh is LoadState.Loading -> {
-                      item { LoadingView(modifier = Modifier.fillParentMaxSize()) }
-                  }
-                  loadState.append is LoadState.Loading -> {
-                      item { LoadingItem() }
-                  }
-                  loadState.refresh is LoadState.Error -> {
-                      val stateError = lazyMovieItems.loadState.refresh as LoadState.Error
-                      item {
-                          ErrorItem(
-                              message = stateError.error.localizedMessage!!,
-                              modifier = Modifier.fillParentMaxSize(),
-                              onClickRetry = { retry() }
-                          )
-                      }
-                  }
-                  loadState.append is LoadState.Error -> {
-                      val stateError = lazyMovieItems.loadState.append as LoadState.Error
-                      item {
-                          ErrorItem(
-                              message = stateError.error.localizedMessage!!,
-                              onClickRetry = { retry() }
-                          )
-                      }
-                  }
-              }
-          }*/
     }
 }
 
