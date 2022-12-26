@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'com.squareup.anvil'
+    id 'com.squareup.anvil' version '2.4.2'
 }
 
 android {
@@ -33,7 +33,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
     buildFeatures {
         compose true
@@ -58,6 +58,9 @@ dependencies {
     implementation project(':featureC:api')
     implementation project(':featureC:impl')
 
+
+    //Circuit
+    implementation "com.slack.circuit:circuit-core:$circuit_version"
 
     implementation "androidx.core:core-ktx:$kotlin_core_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_version"

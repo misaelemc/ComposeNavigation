@@ -1,4 +1,13 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.squareup.anvil' version '2.4.2'
+    id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
+    id 'kotlin-parcelize'
+}
+
 apply from: "$project.rootDir/gradle/android-library.gradle"
+
 
 android {
     namespace 'com.rappi.movie.impl'
@@ -7,6 +16,11 @@ android {
         compose true
     }
 }
+
+anvil {
+    generateDaggerFactories = true
+}
+
 
 dependencies {
     implementation project(':common')
@@ -40,9 +54,17 @@ dependencies {
     // Dagger
     implementation "com.google.dagger:dagger:$dagger_version"
 
+    api("com.slack.circuit:circuit-codegen-annotations:$circuit_version")
+    ksp("com.slack.circuit:circuit-codegen:$circuit_version")
+
     // Http
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
+
+    //Circuit
+
+    api("com.slack.circuit:circuit-codegen-annotations:$circuit_version")
+    ksp("com.slack.circuit:circuit-codegen:$circuit_version")
 }

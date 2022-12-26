@@ -1,8 +1,9 @@
-package com.rappi.detail.impl.presentation.screen
+package com.rappi.movie.impl.presentation.screen
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,23 +13,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -36,84 +30,82 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.rappi.common.AppScope
 import com.rappi.common.IMAGE_URL_PATH
-import com.rappi.common.domain.model.UIState
-import com.rappi.common.presentation.widget.ErrorItem
-import com.rappi.common.presentation.widget.LoadingView
-import com.rappi.detail.impl.domain.model.Review
-import com.rappi.detail.impl.presentation.viewModel.ReviewsViewModel
+import com.rappi.movie.api.domain.model.Movie
+import com.rappi.movie.impl.presentation.presenter.MovieListScreen
+import com.slack.circuit.codegen.annotations.CircuitInject
 
+@CircuitInject(MovieListScreen::class, AppScope::class)
 @Composable
-fun ReviewsScreen(
-    viewModel: ReviewsViewModel,
-    onBackPressed: () -> Unit,
+fun MovieListUi(
+    state: MovieListScreen.State,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "Reviews",
-                        style = MaterialTheme.typography.h6
-                    )
-                },
                 contentColor = Color.Black,
                 backgroundColor = Color.White,
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
-                    }
-                }
-            )
-        },
-    ) { paddingValues ->
-        ReviewContent(
-            viewModel = viewModel,
-            paddingValues = paddingValues,
-        )
-    }
-}
-
-@Composable
-fun ReviewContent(viewModel: ReviewsViewModel, paddingValues: PaddingValues) {
-    val viewState by viewModel.state.collectAsState()
-
-    Crossfade(viewState.state) { uiState ->
-        when (uiState) {
-            UIState.LOADING -> LoadingView(modifier = Modifier.fillMaxSize())
-            UIState.CONTENT -> ReviewsList(viewState.data!!, paddingValues)
-            UIState.ERROR -> {
-                ErrorItem(
-                    message = "Error occurred",
-                    onClickRetry = { }
+            ) {
+                Text(
+                    text = "Most Popular Movies",
+                    style = MaterialTheme.typography.h6
                 )
             }
-            UIState.IDLE -> {
-                // do nothing
+        },
+    ) { paddingValues ->
+
+        when (state) {
+            is MovieListScreen.State.EmptyMovies -> Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "NO movies"
+                )
             }
+            MovieListScreen.State.Loading ->
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            is MovieListScreen.State.Success ->
+                MovieList(
+                    movies = state.movies,
+                    paddingValues = paddingValues,
+                    eventSink = state.eventSink
+                )
         }
+
     }
 }
 
 @Composable
-fun ReviewsList(items: List<Review>, paddingValues: PaddingValues) {
+fun MovieList(
+    movies: List<Movie>,
+    paddingValues: PaddingValues,
+    eventSink: (MovieListScreen.MovieEvent) -> Unit,
+) {
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(bottom = paddingValues.calculateBottomPadding()),
     ) {
-        items(items) { review ->
-            ReviewItem(review = review)
+        items(movies) { movie ->
+            MovieItem(movie = movie!!, onMovieItemClick = {
+                eventSink(MovieListScreen.MovieEvent.OpenMovie(movie.id))
+            })
             Divider()
         }
     }
 }
 
 @Composable
-fun ReviewItem(review: Review) {
+fun MovieItem(movie: Movie, onMovieItemClick: () -> Unit) {
     Surface(
         color = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.onBackground,
+        modifier = Modifier.clickable(onClick = onMovieItemClick)
     ) {
         Column {
             Row(
@@ -123,8 +115,8 @@ fun ReviewItem(review: Review) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ReviewImage(
-                    imageUrl = review.avatar.orEmpty(),
+                MovieImage(
+                    movie.backdropUrl.orEmpty(),
                     modifier = Modifier.size(120.dp)
                 )
                 Column(
@@ -133,17 +125,19 @@ fun ReviewItem(review: Review) {
                         .padding(start = 16.dp)
                 ) {
                     Text(
-                        text = review.name,
+                        text = movie.title,
                         maxLines = 2,
                         style = MaterialTheme.typography.h6,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = review.content,
-                        maxLines = 3,
-                        style = MaterialTheme.typography.body1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    if (movie.overview != null) {
+                        Text(
+                            text = movie.overview!!,
+                            maxLines = 3,
+                            style = MaterialTheme.typography.body1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }
@@ -151,7 +145,7 @@ fun ReviewItem(review: Review) {
 }
 
 @Composable
-fun ReviewImage(
+fun MovieImage(
     imageUrl: String,
     modifier: Modifier = Modifier
 ) {
@@ -164,8 +158,8 @@ fun ReviewImage(
 
     Image(
         painter = painter,
-        modifier = modifier.clip(CircleShape),
-        contentDescription = null,
+        modifier = modifier,
+        contentDescription = "Movie Item Image",
         contentScale = ContentScale.Crop
     )
 }

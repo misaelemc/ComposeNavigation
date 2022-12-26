@@ -1,5 +1,6 @@
 package com.rappi.detail.impl.data.repository
 
+import com.rappi.common.AppScope
 import com.rappi.common.FeatureScope
 import com.rappi.detail.impl.data.datasource.remote.MovieDetailService
 import com.rappi.detail.impl.data.model.ReviewsResponse
@@ -11,7 +12,7 @@ import dagger.Reusable
 import javax.inject.Inject
 
 @Reusable
-@ContributesBinding(scope = FeatureScope::class, boundType = MovieDetailRepository::class)
+@ContributesBinding(scope = AppScope::class, boundType = MovieDetailRepository::class)
 class MovieDetailRepositoryImpl @Inject constructor(
     private val api: MovieDetailService
 ) : MovieDetailRepository {
