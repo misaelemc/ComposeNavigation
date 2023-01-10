@@ -3,11 +3,12 @@ package com.rappi.featureC.api
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.rappi.navigation.AggregateFeatureEntry
+import com.rappi.navigation.NavigationFeatureEntry
+import com.rappi.navigation.ScreenRoutes
 
-abstract class FeatureCEntry : AggregateFeatureEntry {
+abstract class FeatureCEntry : NavigationFeatureEntry {
 
-    override val featureRoute = "$ROUTE?$FROM={$FROM}"
+    override val featureRoute: String = ScreenRoutes.FEATURE_C.value
 
     override val arguments: List<NamedNavArgument>
         get() = listOf(
@@ -16,11 +17,8 @@ abstract class FeatureCEntry : AggregateFeatureEntry {
             }
         )
 
-    fun destination(from: String) = "$ROUTE?$FROM=$from"
-
     companion object {
         const val FROM = "from"
-        private const val ROUTE = "featureC"
         const val FEATURE_1_ROUTE = "feature-1"
         const val FEATURE_2_ROUTE = "feature-2"
     }

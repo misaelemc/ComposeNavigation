@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
         ModalBottomSheetLayout(bottomSheetNavigator) {
             NavHost(
                 navController,
-                startDestination = destinations.entry<MovieEntry>().featureRoute
+                startDestination = destinations.entry<MovieEntry>().getRoute()
             ) {
                 with(destinations.entry<MovieEntry>()) {
                     composable(navController, destinations, sheetState)

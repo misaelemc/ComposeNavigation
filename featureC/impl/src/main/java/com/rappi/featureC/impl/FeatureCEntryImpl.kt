@@ -18,7 +18,7 @@ class FeatureCEntryImpl @Inject constructor() : FeatureCEntry() {
         destinations: NavDestinations,
         sheetState: ModalBottomSheetState
     ) {
-        navigation(startDestination = FEATURE_1_ROUTE, route = featureRoute) {
+        navigation(startDestination = FEATURE_1_ROUTE, route = this@FeatureCEntryImpl.getRoute()) {
             composable(
                 route = FEATURE_1_ROUTE,
                 arguments = arguments,

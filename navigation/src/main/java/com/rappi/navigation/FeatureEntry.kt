@@ -2,33 +2,44 @@ package com.rappi.navigation
 
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavDeepLink
-import androidx.navigation.navDeepLink
 
 typealias NavDestinations = Map<Class<out FeatureEntry>, @JvmSuppressWildcards FeatureEntry>
-
-private const val DEEPLINK_URL = "https://rappi.com"
-private const val DEEPLINK_URI = "app://rappi.com"
 
 interface FeatureEntry {
 
     val featureRoute: String
 
+    val deepLinks: List<NavDeepLink>
+        get() = emptyList()
+
     val arguments: List<NamedNavArgument>
         get() = emptyList()
 
-    val deepLinks: List<NavDeepLink>
-        get() = createDeepLinksPath(featureRoute)
-
-    private fun createDeepLinksPath(vararg path: String): List<NavDeepLink> {
-        val navDeepLinks = arrayListOf<NavDeepLink>()
-        path.forEach {
-            navDeepLinks.add(navDeepLink {
-                uriPattern = "$DEEPLINK_URL/$it"
-            })
-            navDeepLinks.add(navDeepLink {
-                uriPattern = "$DEEPLINK_URI/$it"
-            })
+    fun getRoute(): String {
+        var finalRoute = "$featureRoute?"
+        arguments.forEach { arg ->
+            finalRoute += "${arg.name}={${arg.name}}"
         }
-        return navDeepLinks
+        return finalRoute
     }
+
+    fun destination(vararg params: NavArgument): String {
+        var route = "$featureRoute?"
+        arguments.forEach { arg ->
+            params.forEach { param ->
+                if (arg.name == param.name) {
+                    route += "${arg.name}=${param.value}"
+                }
+            }
+        }
+        return route
+    }
+}
+
+data class NavArgument(val name: String, val value: Any)
+
+enum class ScreenRoutes constructor(val value: String) {
+    MOVIES("movies"),
+    MOVIE_DETAIL("movie-detail"),
+    FEATURE_C("feature-c"),
 }

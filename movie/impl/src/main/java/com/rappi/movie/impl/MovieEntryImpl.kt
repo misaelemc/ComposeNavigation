@@ -9,9 +9,11 @@ import androidx.navigation.NavHostController
 import com.rappi.common.ComponentHolder
 import com.rappi.common.daggerViewModel
 import com.rappi.detail.api.MovieDetailEntry
+import com.rappi.detail.api.MovieDetailEntry.Companion.ID
 import com.rappi.movie.api.MovieEntry
 import com.rappi.movie.impl.di.MovieComponent
 import com.rappi.movie.impl.presentation.screen.MovieScreen
+import com.rappi.navigation.NavArgument
 import com.rappi.navigation.NavDestinations
 import com.rappi.navigation.entry
 import javax.inject.Inject
@@ -31,7 +33,7 @@ class MovieEntryImpl @Inject constructor() : MovieEntry() {
             viewModel = daggerViewModel { component.viewModel },
             onMovieItemClick = {
                 navController.navigate(
-                    destinations.entry<MovieDetailEntry>().destination(it)
+                    destinations.entry<MovieDetailEntry>().destination(NavArgument(ID, it))
                 )
             }
         )

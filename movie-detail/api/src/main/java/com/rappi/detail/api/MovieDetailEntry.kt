@@ -3,11 +3,12 @@ package com.rappi.detail.api
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import com.rappi.navigation.ComposableFeatureEntry
+import com.rappi.navigation.ScreenRoutes
+import com.rappi.navigation.SingleFeatureEntry
 
-abstract class MovieDetailEntry : ComposableFeatureEntry {
+abstract class MovieDetailEntry : SingleFeatureEntry {
 
-    override val featureRoute = "$ROUTE?$ID={$ID}"
+    override val featureRoute: String = ScreenRoutes.MOVIE_DETAIL.value
 
     override val arguments: List<NamedNavArgument>
         get() = listOf(
@@ -16,12 +17,7 @@ abstract class MovieDetailEntry : ComposableFeatureEntry {
             }
         )
 
-    fun destination(id: Int) = "$ROUTE?$ID=$id"
-
     companion object {
         const val ID = "id"
-        const val DETAIL = "detail"
-        const val REVIEW = "review"
-        private const val ROUTE = "movie-detail"
     }
 }

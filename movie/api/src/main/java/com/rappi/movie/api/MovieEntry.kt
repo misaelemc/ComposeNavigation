@@ -1,10 +1,9 @@
 package com.rappi.movie.api
 
-import com.rappi.navigation.ComposableFeatureEntry
+import com.rappi.navigation.ScreenRoutes
+import com.rappi.navigation.SingleFeatureEntry
 
-abstract class MovieEntry : ComposableFeatureEntry {
+abstract class MovieEntry : SingleFeatureEntry {
 
-    override val featureRoute = "feature-a"
-
-    fun destination() = featureRoute
+    override val featureRoute: String = ScreenRoutes.MOVIES.value
 }

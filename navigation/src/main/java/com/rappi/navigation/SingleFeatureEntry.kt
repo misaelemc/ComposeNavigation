@@ -9,15 +9,21 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 
 @OptIn(ExperimentalMaterialApi::class)
-interface ComposableFeatureEntry : FeatureEntry {
+interface SingleFeatureEntry : FeatureEntry {
 
+    /**
+     * Add the Composable to the NavGraphBuilder
+     * @param navController The controller that navigated
+     * @param destinations A map that contains all the destinations available to navigate to
+     * @param sheetState State of the ModalBottomSheetLayout composable.
+     */
     fun NavGraphBuilder.composable(
         navController: NavHostController,
         destinations: NavDestinations,
         sheetState: ModalBottomSheetState
     ) {
         composable(
-            route = featureRoute,
+            route = this@SingleFeatureEntry.getRoute(),
             arguments = arguments,
             deepLinks = deepLinks,
             content = { backStackEntry ->
@@ -26,6 +32,13 @@ interface ComposableFeatureEntry : FeatureEntry {
         )
     }
 
+    /**
+     * Add the screen composable to the NavGraphBuilder
+     * @param navController The controller that navigated
+     * @param destinations A map that contains all the destinations available to navigate to
+     * @param backStackEntry The representation of an entry in the back stack of a NavController
+     * @param sheetState State of the ModalBottomSheetLayout composable.
+     */
     @Composable
     fun NavGraphBuilder.Composable(
         navController: NavHostController,

@@ -11,7 +11,11 @@ import com.rappi.common.daggerViewModel
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.di.MovieDetailComponent
 import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
+import com.rappi.featureC.api.FeatureCEntry
+import com.rappi.featureC.api.FeatureCEntry.Companion.FROM
+import com.rappi.navigation.NavArgument
 import com.rappi.navigation.NavDestinations
+import com.rappi.navigation.entry
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,7 +38,11 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
         MovieDetailScreen(
             viewModel = daggerViewModel { component.movieDetailViewModel },
             onBackPressed = { navController.popBackStack() },
-            onReviewsClicked = { navController.navigate(REVIEW) }
+            onReviewsClicked = {
+                navController.navigate(
+                    destinations.entry<FeatureCEntry>().destination(NavArgument(FROM,"Movies Detail"))
+                )
+            }
         )
     }
 }
