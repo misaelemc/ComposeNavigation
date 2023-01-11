@@ -1,16 +1,11 @@
 package com.rappi.movie.impl.domain.repository
 
-import com.rappi.movie.api.data.model.MovieListResponse
+import com.rappi.common.paging.Pageable
+import com.rappi.movie.api.data.model.MovieResponseItem
 
 
 interface MovieRepository {
 
-    suspend fun fetchMovies(
-        page: Int,
-        category: String = CATEGORY_POPULAR
-    ): MovieListResponse
+    fun getMoviesPageable(): Pageable<MovieResponseItem>
 
-    companion object {
-        const val CATEGORY_POPULAR = "popular"
-    }
 }
