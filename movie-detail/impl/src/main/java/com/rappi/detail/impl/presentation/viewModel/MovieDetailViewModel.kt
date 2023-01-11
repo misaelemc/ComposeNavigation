@@ -1,22 +1,31 @@
 package com.rappi.detail.impl.presentation.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rappi.common.domain.model.UIState
 import com.rappi.common.domain.model.UIStateResponse
+import com.rappi.common.viewModel.ViewModelAssistedFactory
+import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class MovieDetailViewModel constructor(
-    movieId: Int,
+class MovieDetailViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     fetchMovieItemUC: FetchMovieItemUC
 ) : ViewModel() {
 
-    val state = fetchMovieItemUC.fetchMovieById(movieId)
+    val state = fetchMovieItemUC.fetchMovieById(handle.get<Int>(MovieDetailEntry.ID) ?: -1)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
             UIStateResponse(state = UIState.LOADING)
         )
+
+    @AssistedFactory
+    interface Factory : ViewModelAssistedFactory<MovieDetailViewModel>
 }

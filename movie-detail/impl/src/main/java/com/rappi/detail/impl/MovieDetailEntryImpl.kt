@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.rappi.common.ComponentHolder
 import com.rappi.common.daggerViewModel
+import com.rappi.common.viewModel.compose.InjectComposition
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.di.MovieDetailComponent
 import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
@@ -23,6 +24,9 @@ import javax.inject.Singleton
 @OptIn(ExperimentalMaterialApi::class)
 class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
 
+    private val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
+        .create()
+
     @Composable
     override fun NavGraphBuilder.Composable(
         navController: NavHostController,
@@ -30,19 +34,16 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
         backStackEntry: NavBackStackEntry,
         sheetState: ModalBottomSheetState
     ) {
-        val movieId = backStackEntry.arguments?.getInt(ID, -1) ?: -1
-        val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
-            .createMovieDetailFactory()
-            .create(movieId)
-
-        MovieDetailScreen(
-            viewModel = daggerViewModel { component.movieDetailViewModel },
-            onBackPressed = { navController.popBackStack() },
-            onReviewsClicked = {
-                navController.navigate(
-                    destinations.entry<FeatureCEntry>().destination(NavArgument(FROM,"Movies Detail"))
-                )
-            }
-        )
+        InjectComposition(component.getFactoryViewModelAssistedFactory()) {
+            MovieDetailScreen(
+                onBackPressed = { navController.popBackStack() },
+                onReviewsClicked = {
+                    navController.navigate(
+                        destinations.entry<FeatureCEntry>()
+                            .destination(NavArgument(FROM, "Movies Detail"))
+                    )
+                }
+            )
+        }
     }
 }

@@ -42,13 +42,14 @@ import com.rappi.common.LARGE_IMAGE_URL_PATH
 import com.rappi.common.domain.model.UIState
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingView
+import com.rappi.common.viewModel.compose.daggerViewModel
 import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
 import com.rappi.movie.api.domain.model.Movie
 
 @Composable
 fun MovieDetailScreen(
-    viewModel: MovieDetailViewModel,
+    viewModel: MovieDetailViewModel = daggerViewModel(),
     onBackPressed: () -> Unit,
     onReviewsClicked: () -> Unit,
 ) {
@@ -106,7 +107,7 @@ fun MovieDetailContent(data: FetchMovieItemUC.MovieDetail, modifier: Modifier = 
             .verticalScroll(rememberScrollState())
     ) {
         MovieDetailImage(
-            imageUrl = "$LARGE_IMAGE_URL_PATH/${data.movie.backdropUrl.orEmpty()}" ,
+            imageUrl = "$LARGE_IMAGE_URL_PATH/${data.movie.backdropUrl.orEmpty()}",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(240.dp)
@@ -163,7 +164,7 @@ fun MovieDetailImage(
 fun MovieCard(movie: Movie) {
     Column(modifier = Modifier.width(140.dp)) {
         MovieDetailImage(
-            imageUrl = "$IMAGE_URL_PATH/${movie.backdropUrl.orEmpty()}" ,
+            imageUrl = "$IMAGE_URL_PATH/${movie.backdropUrl.orEmpty()}",
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
