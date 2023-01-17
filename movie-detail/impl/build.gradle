@@ -46,6 +46,10 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
 
+    //ViewModel code generator
+    api project(":viewmodel-annotations")
+    anvil project(':viewmodel-generator')
+
     testImplementation("junit:junit:$junit_version")
     testImplementation("io.mockk:mockk:$mock_version")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
