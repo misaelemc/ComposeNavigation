@@ -14,9 +14,11 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class FetchMovieItemUC @Inject constructor(private val repository: MovieDetailRepository) {
+class FetchMovieItemUCImpl @Inject constructor(
+    private val repository: MovieDetailRepository
+): FetchMovieItemUC {
 
-    fun fetchMovieById(movieId: Int): Flow<UIStateResponse<MovieDetail>> {
+    override fun invoke(movieId: Int): Flow<UIStateResponse<MovieDetail>> {
         return combine(
             getMovieById(movieId),
             getRecommendationsById(movieId)
@@ -38,7 +40,7 @@ class FetchMovieItemUC @Inject constructor(private val repository: MovieDetailRe
         }.flowOn(Dispatchers.IO)
     }
 
-     private fun getMovieById(movieId: Int) : Flow<MovieResponseItem?> {
+    private fun getMovieById(movieId: Int): Flow<MovieResponseItem?> {
         return flow {
             try {
                 val response = repository.fetchMovieById(movieId)
@@ -50,7 +52,7 @@ class FetchMovieItemUC @Inject constructor(private val repository: MovieDetailRe
         }
     }
 
-    private fun getRecommendationsById(movieId: Int) : Flow<List<MovieResponseItem>> {
+    private fun getRecommendationsById(movieId: Int): Flow<List<MovieResponseItem>> {
         return flow {
             try {
                 val response = repository.fetchRecommendedMoviesById(movieId)
@@ -65,6 +67,10 @@ class FetchMovieItemUC @Inject constructor(private val repository: MovieDetailRe
             }
         }
     }
-
-    data class MovieDetail(val movie: Movie, val recommended: List<Movie>)
 }
+
+interface FetchMovieItemUC {
+    fun invoke(movieId: Int): Flow<UIStateResponse<MovieDetail>>
+}
+
+data class MovieDetail(val movie: Movie, val recommended: List<Movie>)

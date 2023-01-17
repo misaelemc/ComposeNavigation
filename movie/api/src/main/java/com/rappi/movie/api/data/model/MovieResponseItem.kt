@@ -10,10 +10,8 @@ data class MovieResponseItem(
     @SerializedName("overview") val overview: String?,
     @SerializedName("release_date") val releaseDate: String?,
     @SerializedName("title") val title: String,
-    @SerializedName("video") val hasVideo: Boolean,
     @SerializedName("vote_average") val voteAverage: Float,
     @SerializedName("vote_count") val voteCount: Int,
-    @SerializedName("imdb_id") val imdbId: String?
 )
 
 fun MovieResponseItem.toMovie(): Movie {
@@ -23,10 +21,8 @@ fun MovieResponseItem.toMovie(): Movie {
         backdropUrl = this.backdropUrl,
         overview = this.overview,
         releaseDate = this.releaseDate,
-        hasVideo = this.hasVideo,
         voteAverage = this.voteAverage,
         voteCount = this.voteCount,
-        imdbId = this.imdbId,
         title = this.title
     )
 }

@@ -19,11 +19,11 @@ class MovieDetailViewModel @AssistedInject constructor(
     fetchMovieItemUC: FetchMovieItemUC
 ) : ViewModel() {
 
-    val state = fetchMovieItemUC.fetchMovieById(handle.get<Int>(MovieDetailEntry.ID) ?: -1)
+    val state = fetchMovieItemUC.invoke(handle.get<Int>(MovieDetailEntry.ID) ?: -1)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            UIStateResponse(state = UIState.LOADING)
+            UIStateResponse(state = UIState.IDLE)
         )
 
     @AssistedFactory

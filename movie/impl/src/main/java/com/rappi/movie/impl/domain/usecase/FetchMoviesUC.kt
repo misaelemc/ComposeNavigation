@@ -5,13 +5,19 @@ import com.rappi.movie.api.domain.model.Movie
 import com.rappi.movie.impl.domain.repository.MovieRepository
 import javax.inject.Inject
 
-class FetchMoviesUC @Inject constructor(private val repository: MovieRepository) {
+class FetchMoviesUCImpl @Inject constructor(
+    private val repository: MovieRepository
+) : FetchMoviesUC {
 
-    suspend fun fetchMovies(page: Int): List<Movie> {
+    override suspend fun fetchMovies(page: Int): List<Movie> {
         return try {
             repository.fetchMovies(page).results.map { it.toMovie() }
         } catch (e: Exception) {
             listOf()
         }
     }
+}
+
+interface FetchMoviesUC {
+    suspend fun fetchMovies(page: Int): List<Movie>
 }

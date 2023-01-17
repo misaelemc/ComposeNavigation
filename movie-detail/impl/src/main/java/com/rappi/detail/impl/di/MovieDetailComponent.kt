@@ -8,6 +8,8 @@ import com.rappi.common.viewModel.ViewModelAssistedFactoryKey
 import com.rappi.common.viewModel.ViewModelFactory
 import com.rappi.common.viewModel.ViewModelFactoryModule
 import com.rappi.detail.impl.data.datasource.remote.MovieDetailService
+import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
+import com.rappi.detail.impl.domain.usecase.FetchMovieItemUCImpl
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
 import com.squareup.anvil.annotations.ContributesSubcomponent
 import com.squareup.anvil.annotations.ContributesTo
@@ -43,10 +45,13 @@ object MovieDetailModule {
 
 @Module(includes = [ViewModelFactoryModule::class])
 @ContributesTo(FeatureScope::class)
-interface MovieDetailVMModule {
+interface MovieDetailBindModule {
     @Binds
     @[IntoMap ViewModelAssistedFactoryKey(MovieDetailViewModel::class)]
     fun bindsOtherViewModelFactory(
         factory: MovieDetailViewModel.Factory
     ): ViewModelAssistedFactory<*>
+
+    @Binds
+    fun bindFetchMovieItemUC(impl: FetchMovieItemUCImpl) : FetchMovieItemUC
 }

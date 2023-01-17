@@ -34,12 +34,13 @@ import com.rappi.common.IMAGE_URL_PATH
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingItem
 import com.rappi.common.presentation.widget.LoadingView
+import com.rappi.common.viewModel.compose.daggerViewModel
 import com.rappi.movie.api.domain.model.Movie
 import com.rappi.movie.impl.presentation.viewModel.MovieViewModel
 
 @Composable
 fun MovieScreen(
-    viewModel: MovieViewModel,
+    viewModel: MovieViewModel = daggerViewModel(),
     onMovieItemClick: (Int) -> Unit,
 ) {
     Scaffold(
