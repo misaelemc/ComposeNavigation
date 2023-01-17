@@ -94,7 +94,6 @@ internal class MovieDetailScreenRobot constructor(
     private val test: MovieDetailScreenTest
 ) : BaseRobot(test.composeTestRule) {
 
-
     fun assertLoadingViewIsDisplayed() = test.apply {
         config.setState(UIStateResponse(state = UIState.LOADING))
         composeTestRule.onNodeWithTag(LOADER_TAG).assertExists()
