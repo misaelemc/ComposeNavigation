@@ -1,34 +1,41 @@
 package com.rappi.movie.impl.presentation.viewModel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import com.rappi.common.viewModel.ViewModelAssistedFactory
 import com.rappi.movie.api.domain.model.Movie
 import com.rappi.movie.impl.domain.usecase.FetchMoviesUC
-import com.rappi.movie.impl.presentation.paging.MoviePagingSource
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class MovieViewModel @AssistedInject constructor(
-    @Assisted private val handle: SavedStateHandle,
+class MovieViewModel constructor(
     private val fetchMoviesUC: FetchMoviesUC
 ) : ViewModel() {
 
-    val movies: Flow<PagingData<Movie>> = Pager(PagingConfig(pageSize = PAGE_SIZE)) {
-        MoviePagingSource(fetchMoviesUC)
-    }.flow.cachedIn(viewModelScope)
+    val state = fetchMoviesUC.fetchMovies()
+        .map {
+            if (it.isEmpty()) {
+                State.Loading
+            } else {
+                State.Success(it)
+            }
+        }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            State.Loading
+        )
 
-    companion object {
-        const val PAGE_SIZE = 20
+    fun loadMore() {
+        viewModelScope.launch {
+            fetchMoviesUC.load()
+        }
     }
 
-    @AssistedFactory
-    interface Factory : ViewModelAssistedFactory<MovieViewModel>
+    sealed class State {
+        object Empty: State()
+        object Loading: State()
+        data class Success(val data: List<Movie>): State()
+    }
 }

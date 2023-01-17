@@ -7,9 +7,8 @@ import retrofit2.http.Query
 
 interface MovieService {
 
-    @GET("movie/{category}")
+    @GET("movie/popular")
     suspend fun fetchMovies(
-        @Path("category") category: String,
         @Query("page") page: Int
     ): MovieListResponse
 }

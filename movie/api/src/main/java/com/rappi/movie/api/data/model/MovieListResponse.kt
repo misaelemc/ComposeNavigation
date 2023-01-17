@@ -1,3 +1,8 @@
 package com.rappi.movie.api.data.model
 
-data class MovieListResponse(val results: List<MovieResponseItem>)
+import com.google.gson.annotations.SerializedName
+
+data class MovieListResponse(
+    val results: List<MovieResponseItem>,
+    @SerializedName("total_pages") val totalPages: Int
+)
