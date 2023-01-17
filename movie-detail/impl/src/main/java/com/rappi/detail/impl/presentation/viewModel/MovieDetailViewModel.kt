@@ -14,7 +14,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-
 @ContributesViewModel(FeatureScope::class)
 class MovieDetailViewModel @AssistedInject constructor(
     @Assisted private val handle: SavedStateHandle,
