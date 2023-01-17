@@ -1,0 +1,23 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm'
+    id 'kotlin-kapt'
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        freeCompilerArgs += "-opt-in=com.squareup.anvil.annotations.ExperimentalAnvilApi"
+    }
+}
+
+dependencies {
+    api "com.squareup.anvil:compiler-api:2.4.3"
+    api "com.squareup.anvil:compiler-utils:2.4.3"
+    implementation project(':viewmodel-annotations')
+
+    // Optional:
+    compileOnly "com.google.auto.service:auto-service-annotations:1.0.1"
+    kapt "com.google.auto.service:auto-service:1.0"
+
+    implementation 'com.google.dagger:dagger:2.44.2'
+
+}

@@ -42,4 +42,8 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
+
+    api project(":viewmodel-annotations")
+    //ViewModel code generator
+    anvil project(':viewmodel-generator')
 }
