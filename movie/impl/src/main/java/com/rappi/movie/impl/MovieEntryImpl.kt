@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.rappi.common.ComponentHolder
 import com.rappi.common.daggerViewModel
+import com.rappi.common.viewModel.compose.InjectComposition
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.api.MovieDetailEntry.Companion.ID
 import com.rappi.movie.api.MovieEntry
@@ -21,6 +22,8 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterialApi::class)
 class MovieEntryImpl @Inject constructor() : MovieEntry() {
 
+    private val component = ComponentHolder.component<MovieComponent.ParentComponent>().factory()
+
     @Composable
     override fun NavGraphBuilder.Composable(
         navController: NavHostController,
@@ -28,14 +31,14 @@ class MovieEntryImpl @Inject constructor() : MovieEntry() {
         backStackEntry: NavBackStackEntry,
         sheetState: ModalBottomSheetState
     ) {
-        val component = ComponentHolder.component<MovieComponent.ParentComponent>().factory()
-        MovieScreen(
-            viewModel = daggerViewModel { component.viewModel },
-            onMovieItemClick = {
-                navController.navigate(
-                    destinations.entry<MovieDetailEntry>().destination(NavArgument(ID, it))
-                )
-            }
-        )
+        InjectComposition(component.getFactoryViewModelAssistedFactory()) {
+            MovieScreen(
+                onMovieItemClick = {
+                    navController.navigate(
+                        destinations.entry<MovieDetailEntry>().destination(NavArgument(ID, it))
+                    )
+                }
+            )
+        }
     }
 }

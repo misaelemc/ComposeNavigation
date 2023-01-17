@@ -1,19 +1,26 @@
 package com.rappi.detail.impl.presentation.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.movies.viewmodel.annotations.ContributesViewModel
+import com.rappi.common.FeatureScope
 import com.rappi.common.domain.model.UIState
 import com.rappi.common.domain.model.UIStateResponse
+import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.domain.usecase.FetchReviewsByIdUC
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
-class ReviewsViewModel constructor(
-    movieId: Int,
+@ContributesViewModel(FeatureScope::class)
+class ReviewsViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     fetchReviewsByIdUC: FetchReviewsByIdUC
 ) : ViewModel() {
 
-    val state = fetchReviewsByIdUC.invoke(movieId)
+    val state = fetchReviewsByIdUC.invoke(handle.get<Int>(MovieDetailEntry.ID) ?: -1)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

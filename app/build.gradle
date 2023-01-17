@@ -42,9 +42,7 @@ android {
         kotlinCompilerExtensionVersion rootProject.ext.compose_ui_version
     }
     packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
+        resources.excludes.add("META-INF/*")
     }
 }
 
@@ -90,4 +88,11 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
     implementation("com.squareup.okhttp3:okhttp:$http_version")
     implementation("com.squareup.okhttp3:logging-interceptor:$http_version")
+
+
+    testImplementation("junit:junit:$junit_version")
+    testImplementation("io.mockk:mockk:$mock_version")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$compose_ui_version")
+    androidTestImplementation("io.mockk:mockk-android:$mock_version")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_ui_version")
 }

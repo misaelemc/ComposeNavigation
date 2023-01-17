@@ -8,10 +8,8 @@ data class Movie(
     val backdropUrl: String?,
     val overview: String?,
     val releaseDate: String?,
-    val hasVideo: Boolean,
     val voteAverage: Float,
     val voteCount: Int,
-    val imdbId: String?,
     val title: String
 )
 
@@ -22,10 +20,8 @@ fun Movie.toMovieResponseItem(): MovieResponseItem {
         backdropUrl = this.backdropUrl,
         overview = this.overview,
         releaseDate = this.releaseDate,
-        hasVideo = this.hasVideo,
         voteAverage = this.voteAverage,
         voteCount = this.voteCount,
-        imdbId = this.imdbId,
         title = this.title
     )
 }

@@ -15,6 +15,10 @@ dependencies {
     implementation project(':movie-detail:api')
     implementation project(':featureC:api')
 
+    //ViewModel code generator
+    api project(":viewmodel-annotations")
+    anvil project(':viewmodel-generator')
+
     implementation "androidx.core:core-ktx:$kotlin_core_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$view_model_version"
 

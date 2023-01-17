@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class FetchMoviesUC @Inject constructor(private val repository: MovieRepository) {
+class FetchMoviesUCImpl @Inject constructor(
+    private val repository: MovieRepository
+) : FetchMoviesUC {
 
     private lateinit var pageable: Pageable<MovieResponseItem>
 
-    fun fetchMovies(): Flow<List<Movie>> {
+    override fun fetchMovies(): Flow<List<Movie>> {
         pageable = repository.getMoviesPageable()
         return pageable.data.map {
             when (it) {
@@ -25,7 +27,14 @@ class FetchMoviesUC @Inject constructor(private val repository: MovieRepository)
         }
     }
 
-    suspend fun load() {
+    override suspend fun load() {
         withContext(Dispatchers.IO) { pageable.load() }
     }
+}
+
+interface FetchMoviesUC {
+
+    fun fetchMovies(): Flow<List<Movie>>
+
+    suspend fun load()
 }
