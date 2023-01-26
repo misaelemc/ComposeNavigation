@@ -19,19 +19,20 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
 import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.rappi.movie.api.MovieEntry
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.featureC.api.FeatureCEntry
+import com.rappi.movie.api.MovieEntry
 import com.rappi.navigation.NavDestinations
+import com.rappi.navigation.SingleFeatureEntry
 import com.rappi.navigation.entry
 import com.rappi.series.SeriesEntry
 import dagger.android.AndroidInjection
@@ -75,34 +76,7 @@ class MainActivity : ComponentActivity() {
 
         ModalBottomSheetLayout(bottomSheetNavigator) {
             Scaffold(
-                bottomBar = {
-                    BottomNavigation {
-                        val navBackStackEntry by navController.currentBackStackEntryAsState()
-                        val currentDestination = navBackStackEntry?.destination
-                        topDestinations.forEach { screen ->
-                            BottomNavigationItem(
-                                icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
-                                label = { Text(screen.getRoute()) },
-                                selected = currentDestination?.hierarchy?.any { it.route == screen.getRoute() } == true,
-                                onClick = {
-                                    navController.navigate(screen.getRoute()) {
-                                        // Pop up to the start destination of the graph to
-                                        // avoid building up a large stack of destinations
-                                        // on the back stack as users select items
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        // Avoid multiple copies of the same destination when
-                                        // reselecting the same item
-                                        launchSingleTop = true
-                                        // Restore state when reselecting a previously selected item
-                                        restoreState = true
-                                    }
-                                }
-                            )
-                        }
-                    }
-                }
+                bottomBar = { bottomNavBar(navController, topDestinations) }
             ) { innerPadding ->
                 NavHost(
                     navController,
@@ -125,4 +99,37 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @Composable
+    private fun bottomNavBar(
+        navController: NavHostController,
+        topDestinations: List<SingleFeatureEntry>
+    ) {
+        BottomNavigation {
+            val navBackStackEntry by navController.currentBackStackEntryAsState()
+            val currentDestination = navBackStackEntry?.destination
+            topDestinations.forEach { screen ->
+                BottomNavigationItem(
+                    icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+                    label = { Text(screen.getRoute()) },
+                    selected = currentDestination?.hierarchy?.any { it.route == screen.getRoute() } == true,
+                    onClick = {
+                        navController.navigate(screen.getRoute()) {
+                            // Pop up to the start destination of the graph to
+                            // avoid building up a large stack of destinations
+                            // on the back stack as users select items
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            // Avoid multiple copies of the same destination when
+                            // reselecting the same item
+                            launchSingleTop = true
+                            // Restore state when reselecting a previously selected item
+                            restoreState = true
+                        }
+                    }
+                )
+            }
+        }
+    }
 }
+
