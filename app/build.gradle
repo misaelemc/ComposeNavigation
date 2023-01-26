@@ -57,6 +57,8 @@ dependencies {
     implementation project(':movie-detail:impl')
     implementation project(':featureC:api')
     implementation project(':featureC:impl')
+    implementation project(':series:api')
+    implementation project(':series:impl')
 
 
     implementation "androidx.core:core-ktx:$kotlin_core_version"

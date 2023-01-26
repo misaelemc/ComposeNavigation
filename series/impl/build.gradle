@@ -1,7 +1,7 @@
 apply from: "$project.rootDir/gradle/android-library.gradle"
 
 android {
-    namespace 'com.rappi.detail.impl'
+    namespace 'com.rappi.series.impl'
 
     buildFeatures {
         compose true
@@ -11,9 +11,7 @@ android {
 dependencies {
     implementation project(':common')
     implementation project(':navigation')
-    implementation project(':movie:api')
-    implementation project(':movie-detail:api')
-    implementation project(':featureC:api')
+    implementation project(':series:api')
 
     implementation "androidx.core:core-ktx:$kotlin_core_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$view_model_version"
@@ -29,6 +27,10 @@ dependencies {
     // Coil
     implementation("io.coil-kt:coil-compose:$coil_version")
 
+    // Paging
+    implementation("androidx.paging:paging-common-ktx:$pagging_common_version")
+    implementation("androidx.paging:paging-compose:$pagging_compose_version")
+
     // Navigation Compose
     implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
     implementation "com.google.accompanist:accompanist-navigation-material:$accompanist_version"
@@ -38,11 +40,13 @@ dependencies {
 
     // Http
     implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
-    implementation("com.google.code.gson:gson:$gson_version")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
 
+    implementation("com.google.code.gson:gson:$gson_version")
+
+    //ViewModel
     //ViewModels
     api project(":viewmodel-annotations")
     anvil project(':viewmodel-generator')
