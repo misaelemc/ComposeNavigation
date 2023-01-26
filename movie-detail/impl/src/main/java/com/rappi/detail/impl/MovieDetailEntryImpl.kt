@@ -7,7 +7,6 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.rappi.common.ComponentHolder
-import com.rappi.common.daggerViewModel
 import com.rappi.common.viewModel.compose.InjectComposition
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.di.MovieDetailComponent

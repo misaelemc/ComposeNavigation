@@ -42,4 +42,5 @@ enum class ScreenRoutes constructor(val value: String) {
     MOVIES("movies"),
     MOVIE_DETAIL("movie-detail"),
     FEATURE_C("feature-c"),
+    SERIES("series"),
 }
