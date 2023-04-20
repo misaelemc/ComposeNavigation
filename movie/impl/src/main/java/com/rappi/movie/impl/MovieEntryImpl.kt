@@ -2,15 +2,12 @@ package com.rappi.movie.impl
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDirections
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.Direction
-import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
-import com.ramcosta.composedestinations.spec.NavGraphSpec
 import com.rappi.common.AppScope
 import com.rappi.common.ComponentHolder
-import com.rappi.common.daggerViewModel
 import com.rappi.common.viewModel.compose.InjectComposition
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.movie.api.MovieEntry
@@ -23,25 +20,23 @@ import com.rappi.navigation.Destinations
 import com.rappi.navigation.entry
 import com.squareup.anvil.annotations.ContributesMultibinding
 import javax.inject.Inject
-import kotlin.reflect.KClass
 
 @DestinationEntryKey(MovieEntry::class)
 @ContributesMultibinding(AppScope::class, boundType = DestinationEntry::class)
-class MovieEntryImpl @Inject constructor() : MovieEntry() {
+class MovieEntryImpl @Inject constructor() : MovieEntry {
 
-    val component = ComponentHolder.component<MovieComponent.ParentComponent>().factory()
+    private val component = ComponentHolder.component<MovieComponent.ParentComponent>().factory()
 
     @Composable
-    override fun NavGraphBuilder.Composable(
+    override fun NavGraphBuilder.ComposableView(
         navController: NavHostController,
         destinations: Destinations,
-        backStackEntry: NavBackStackEntry
     ) {
         InjectComposition(component.getFactoryViewModelAssistedFactory()) {
             MovieScreen(
                 onMovieItemClick = { id ->
                     navController.navigate(
-                        destinations.entry<MovieDetailEntry>().direction(MovieDetailEntry.NavArgs(id))
+                        destinations.entry<MovieDetailEntry>().direction(id)
                             .route
                     )
                 }
@@ -49,7 +44,10 @@ class MovieEntryImpl @Inject constructor() : MovieEntry() {
         }
     }
 
-    override fun direction(navArgsDelegate: Any?): Direction {
+
+    override val destination: DestinationSpec<*> = MovieScreenDestination
+
+    override fun direction(arg: Any?): Direction {
         return MovieScreenDestination.invoke()
     }
 

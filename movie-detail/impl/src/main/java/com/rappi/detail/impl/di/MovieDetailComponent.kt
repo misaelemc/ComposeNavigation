@@ -15,7 +15,7 @@ import retrofit2.Retrofit
 @SingleIn(FeatureScope::class)
 @ContributesSubcomponent(
     scope = FeatureScope::class,
-    parentScope = AppScope::class
+    parentScope = AppScope::class,
 )
 interface MovieDetailComponent {
     val destinations: Destinations

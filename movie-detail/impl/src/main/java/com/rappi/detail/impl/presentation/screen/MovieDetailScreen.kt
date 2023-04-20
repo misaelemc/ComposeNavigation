@@ -45,16 +45,15 @@ import com.rappi.common.domain.model.UIState
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingView
 import com.rappi.common.viewModel.compose.daggerViewModel
-import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
 import com.rappi.movie.api.domain.model.Movie
 
-
 @Composable
-@Destination(navArgsDelegate = MovieDetailEntry.NavArgs::class)
+@Destination
 @RootNavGraph(start = true)
 fun MovieDetailScreen(
+    id: Int = 0,
     viewModel: MovieDetailViewModel = daggerViewModel(),
     onBackPressed: (DestinationsNavigator?) -> Unit,
     onReviewsClicked: (DestinationsNavigator?) -> Unit,

@@ -1,25 +1,10 @@
 package com.rappi.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import kotlin.reflect.KClass
 
-interface SingleDestinationEntry<T> : DestinationEntry<T> {
-
-    fun NavGraphBuilder.composable(
-        navController: NavHostController,
-        destinations: Destinations,
-    ) {
-        composable(
-            route = this@SingleDestinationEntry.route,
-            content = { backStackEntry ->
-                Composable(navController, destinations, backStackEntry)
-            }
-        )
-    }
+interface SingleDestinationEntry : DestinationEntry {
 
     /**
      * Add the screen composable to the NavGraphBuilder
@@ -28,9 +13,8 @@ interface SingleDestinationEntry<T> : DestinationEntry<T> {
      * @param backStackEntry The representation of an entry in the back stack of a NavController
      */
     @Composable
-    fun NavGraphBuilder.Composable(
+    fun NavGraphBuilder.ComposableView(
         navController: NavHostController,
         destinations: Destinations,
-        backStackEntry: NavBackStackEntry
     )
 }
