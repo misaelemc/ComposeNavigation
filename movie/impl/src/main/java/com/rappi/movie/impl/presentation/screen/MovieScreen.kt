@@ -12,9 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyGridState
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
@@ -36,22 +33,26 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.rappi.common.IMAGE_URL_PATH
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingItem
 import com.rappi.common.presentation.widget.LoadingView
+import com.rappi.common.viewModel.compose.daggerViewModel
 import com.rappi.movie.api.domain.model.Movie
 import com.rappi.movie.impl.presentation.viewModel.MovieViewModel
 
 @Composable
+@Destination
+@RootNavGraph(start = true)
 fun MovieScreen(
-    viewModel: MovieViewModel,
     onMovieItemClick: (Int) -> Unit,
+    viewModel: MovieViewModel = daggerViewModel(),
 ) {
     Scaffold(
         topBar = {
@@ -94,7 +95,7 @@ fun MovieList(
             .padding(bottom = paddingValues.calculateBottomPadding()),
         state = lazyListState
     ) {
-        when(val stateValue = movieState.value) {
+        when (val stateValue = movieState.value) {
             MovieViewModel.State.Empty -> {
                 item {
                     ErrorItem(

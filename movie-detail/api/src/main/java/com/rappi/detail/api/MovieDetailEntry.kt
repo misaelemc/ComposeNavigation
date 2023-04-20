@@ -1,23 +1,11 @@
 package com.rappi.detail.api
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
 import com.rappi.navigation.ScreenRoutes
-import com.rappi.navigation.SingleFeatureEntry
+import com.rappi.navigation.SingleDestinationEntry
 
-abstract class MovieDetailEntry : SingleFeatureEntry {
+abstract class MovieDetailEntry : SingleDestinationEntry<MovieDetailEntry.NavArgs> {
 
-    override val featureRoute: String = ScreenRoutes.MOVIE_DETAIL.value
+    override val route: String = ScreenRoutes.MOVIE_DETAIL.value
 
-    override val arguments: List<NamedNavArgument>
-        get() = listOf(
-            navArgument(ID) {
-                type = NavType.IntType
-            }
-        )
-
-    companion object {
-        const val ID = "id"
-    }
+    data class NavArgs(val id : Int = -1)
 }

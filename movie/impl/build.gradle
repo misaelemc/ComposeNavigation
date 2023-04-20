@@ -1,3 +1,6 @@
+plugins {
+    id 'com.google.devtools.ksp' version '1.7.22-1.0.8'
+}
 apply from: "$project.rootDir/gradle/android-library.gradle"
 
 android {
@@ -5,6 +8,17 @@ android {
 
     buildFeatures {
         compose true
+    }
+
+    kotlin {
+        sourceSets {
+            debug {
+                kotlin.srcDir("build/generated/ksp/debug/kotlin")
+            }
+            release {
+                kotlin.srcDir("build/generated/ksp/release/kotlin")
+            }
+        }
     }
 }
 
@@ -14,6 +28,9 @@ dependencies {
     implementation project(':movie:api')
     implementation project(':movie-detail:api')
     implementation project(':featureC:api')
+
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.40-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.40-beta")
 
     implementation "androidx.core:core-ktx:$kotlin_core_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:$view_model_version"
@@ -45,4 +62,8 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version")
+
+    api project(":viewmodel-annotations")
+    //ViewModel code generator
+    anvil project(':viewmodel-generator')
 }

@@ -1,15 +1,22 @@
 package com.rappi.movie.impl.presentation.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.movies.viewmodel.annotations.ContributesViewModel
+import com.rappi.common.FeatureScope
 import com.rappi.movie.api.domain.model.Movie
 import com.rappi.movie.impl.domain.usecase.FetchMoviesUC
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MovieViewModel constructor(
+@ContributesViewModel(FeatureScope::class)
+class MovieViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val fetchMoviesUC: FetchMoviesUC
 ) : ViewModel() {
 

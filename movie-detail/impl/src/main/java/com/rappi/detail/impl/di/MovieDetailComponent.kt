@@ -5,6 +5,7 @@ import com.rappi.common.FeatureScope
 import com.rappi.common.SingleIn
 import com.rappi.common.viewModel.ViewModelFactory
 import com.rappi.detail.impl.data.datasource.remote.MovieDetailService
+import com.rappi.navigation.Destinations
 import com.squareup.anvil.annotations.ContributesSubcomponent
 import com.squareup.anvil.annotations.ContributesTo
 import dagger.Module
@@ -17,6 +18,7 @@ import retrofit2.Retrofit
     parentScope = AppScope::class
 )
 interface MovieDetailComponent {
+    val destinations: Destinations
 
     fun getFactoryViewModelAssistedFactory(): ViewModelFactory
 

@@ -21,7 +21,7 @@ class MovieDetailViewModel @AssistedInject constructor(
     fetchMovieItemUC: FetchMovieItemUC,
 ) : ViewModel() {
 
-    val state = fetchMovieItemUC.fetchMovieById(handle.get<Int>(MovieDetailEntry.ID) ?: -1)
+    val state = fetchMovieItemUC.fetchMovieById(handle.get<Int>("id") ?: -1)
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,

@@ -34,24 +34,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.rappi.common.IMAGE_URL_PATH
 import com.rappi.common.LARGE_IMAGE_URL_PATH
 import com.rappi.common.domain.model.UIState
 import com.rappi.common.presentation.widget.ErrorItem
 import com.rappi.common.presentation.widget.LoadingView
 import com.rappi.common.viewModel.compose.daggerViewModel
+import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.domain.usecase.FetchMovieItemUC
 import com.rappi.detail.impl.presentation.viewModel.MovieDetailViewModel
 import com.rappi.movie.api.domain.model.Movie
 
+
 @Composable
+@Destination(navArgsDelegate = MovieDetailEntry.NavArgs::class)
+@RootNavGraph(start = true)
 fun MovieDetailScreen(
     viewModel: MovieDetailViewModel = daggerViewModel(),
-    onBackPressed: () -> Unit,
-    onReviewsClicked: () -> Unit,
+    onBackPressed: (DestinationsNavigator?) -> Unit,
+    onReviewsClicked: (DestinationsNavigator?) -> Unit,
+    destinationsNavigator: DestinationsNavigator? = null
 ) {
     val viewState by viewModel.state.collectAsState()
 
@@ -67,12 +74,12 @@ fun MovieDetailScreen(
                 contentColor = Color.Black,
                 backgroundColor = Color.White,
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
+                    IconButton(onClick = { onBackPressed.invoke(destinationsNavigator) }) {
                         Icon(imageVector = Icons.Outlined.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = onReviewsClicked) {
+                    IconButton(onClick = { onReviewsClicked.invoke(destinationsNavigator) }) {
                         Icon(imageVector = Icons.Outlined.Info, contentDescription = null)
                     }
                 }

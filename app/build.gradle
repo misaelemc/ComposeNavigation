@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.squareup.anvil'
+    id 'com.google.devtools.ksp' version '1.7.22-1.0.8'
 }
 
 android {
@@ -58,6 +59,8 @@ dependencies {
     implementation project(':featureC:api')
     implementation project(':featureC:impl')
 
+    implementation("io.github.raamcosta.compose-destinations:core:1.9.40-beta")
+    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.40-beta")
 
     implementation "androidx.core:core-ktx:$kotlin_core_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_runtime_version"

@@ -3,24 +3,20 @@ package com.rappi.composenavigation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
-import androidx.compose.material.SwipeableDefaults
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.material.ExperimentalMaterialNavigationApi
-import com.google.accompanist.navigation.material.ModalBottomSheetLayout
 import com.google.accompanist.navigation.material.rememberBottomSheetNavigator
-import com.rappi.movie.api.MovieEntry
 import com.rappi.detail.api.MovieDetailEntry
-import com.rappi.featureC.api.FeatureCEntry
-import com.rappi.navigation.NavDestinations
+import com.rappi.movie.api.MovieEntry
+import com.rappi.navigation.Destinations
 import com.rappi.navigation.entry
 import dagger.android.AndroidInjection
 import javax.inject.Inject
@@ -32,7 +28,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var destinations: NavDestinations
+    lateinit var destinations: Destinations
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -40,36 +36,26 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Scaffold(Modifier.fillMaxSize()) {
-                    AppNavHost()
+                    AppNavHost(it)
                 }
             }
         }
     }
 
     @Composable
-    private fun AppNavHost() {
+    private fun AppNavHost(paddingValues: PaddingValues) {
         val bottomSheetNavigator = rememberBottomSheetNavigator()
         val navController = rememberNavController(bottomSheetNavigator)
 
-        val sheetState = rememberModalBottomSheetState(
-            ModalBottomSheetValue.Hidden,
-            SwipeableDefaults.AnimationSpec,
-        )
-
-        ModalBottomSheetLayout(bottomSheetNavigator) {
-            NavHost(
-                navController,
-                startDestination = destinations.entry<MovieEntry>().getRoute()
-            ) {
-                with(destinations.entry<MovieEntry>()) {
-                    composable(navController, destinations, sheetState)
-                }
-                with(destinations.entry<MovieDetailEntry>()) {
-                    composable(navController, destinations, sheetState)
-                }
-                with(destinations.entry<FeatureCEntry>()) {
-                    navigation(navController, destinations, sheetState)
-                }
+        NavHost(
+            navController,
+            startDestination = destinations.entry<MovieEntry>().route
+        ) {
+            with(destinations.entry<MovieEntry>()) {
+                composable(navController, destinations)
+            }
+            with(destinations.entry<MovieDetailEntry>()) {
+                composable(navController, destinations)
             }
         }
     }

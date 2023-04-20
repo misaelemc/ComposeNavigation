@@ -1,27 +1,25 @@
 package com.rappi.detail.impl
 
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import com.ramcosta.composedestinations.spec.Direction
+import com.rappi.common.AppScope
 import com.rappi.common.ComponentHolder
-import com.rappi.common.daggerViewModel
 import com.rappi.common.viewModel.compose.InjectComposition
 import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.di.MovieDetailComponent
 import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
-import com.rappi.featureC.api.FeatureCEntry
-import com.rappi.featureC.api.FeatureCEntry.Companion.FROM
-import com.rappi.navigation.NavArgument
-import com.rappi.navigation.NavDestinations
-import com.rappi.navigation.entry
+import com.rappi.detail.impl.presentation.screen.destinations.MovieDetailScreenDestination
+import com.rappi.navigation.DestinationEntry
+import com.rappi.navigation.DestinationEntryKey
+import com.rappi.navigation.Destinations
+import com.squareup.anvil.annotations.ContributesMultibinding
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-@OptIn(ExperimentalMaterialApi::class)
+@DestinationEntryKey(MovieDetailEntry::class)
+@ContributesMultibinding(AppScope::class, boundType = DestinationEntry::class)
 class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
 
     private val component = ComponentHolder.component<MovieDetailComponent.ParentComponent>()
@@ -30,20 +28,23 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry() {
     @Composable
     override fun NavGraphBuilder.Composable(
         navController: NavHostController,
-        destinations: NavDestinations,
-        backStackEntry: NavBackStackEntry,
-        sheetState: ModalBottomSheetState
+        destinations: Destinations,
+        backStackEntry: NavBackStackEntry
     ) {
         InjectComposition(component.getFactoryViewModelAssistedFactory()) {
             MovieDetailScreen(
-                onBackPressed = { navController.popBackStack() },
+                onBackPressed = { it?.popBackStack() },
                 onReviewsClicked = {
-                    navController.navigate(
-                        destinations.entry<FeatureCEntry>()
-                            .destination(NavArgument(FROM, "Movies Detail"))
-                    )
+//                    navController.navigate(
+//                        destinations.entry<FeatureCEntry>()
+//                            .destination(NavArgument(FROM, "Movies Detail"))
+//                    )
                 }
             )
         }
+    }
+
+    override fun direction(navArgsDelegate: NavArgs?): Direction {
+        return MovieDetailScreenDestination.invoke(navArgsDelegate)
     }
 }
