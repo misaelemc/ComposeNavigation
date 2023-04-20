@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(paddingValues)
         ) {
 
-
             composable(destinations.entry<MovieEntry>().destination) {
                 with(destinations.entry<MovieEntry>()) {
                     ComposableView(navController, destinations)
