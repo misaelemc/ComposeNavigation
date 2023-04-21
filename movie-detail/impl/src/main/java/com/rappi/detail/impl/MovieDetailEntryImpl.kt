@@ -33,12 +33,12 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry {
     ) {
         InjectComposition(component.getFactoryViewModelAssistedFactory()) {
             MovieDetailScreen(
-                onBackPressed = { it?.popBackStack() },
+                onBackPressed = { navController.popBackStack() },
                 onReviewsClicked = {
-//                    navController.navigate(
-//                        destinations.entry<FeatureCEntry>()
-//                            .destination(NavArgument(FROM, "Movies Detail"))
-//                    )
+                    /*navController.navigate(
+                        destinations.entry<FeatureCEntry>()
+                            .destination(NavArgument(FROM, "Movies Detail"))
+                    )*/
                 }
             )
         }
