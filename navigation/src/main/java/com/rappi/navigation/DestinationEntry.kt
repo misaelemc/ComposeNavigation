@@ -1,5 +1,6 @@
 package com.rappi.navigation
 
+import android.os.Bundle
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.MapKey
@@ -11,7 +12,7 @@ interface DestinationEntry {
 
     val destination: DestinationSpec<*>
 
-    fun direction(arg: Any? = null): Direction
+    fun direction(bundle: Bundle? = null): Direction
 }
 
 @MapKey

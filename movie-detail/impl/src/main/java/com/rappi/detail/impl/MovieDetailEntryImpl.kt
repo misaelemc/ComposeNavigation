@@ -1,10 +1,9 @@
 package com.rappi.detail.impl
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.spec.DestinationSpec
 import com.ramcosta.composedestinations.spec.Direction
 import com.rappi.common.AppScope
@@ -14,7 +13,6 @@ import com.rappi.detail.api.MovieDetailEntry
 import com.rappi.detail.impl.di.MovieDetailComponent
 import com.rappi.detail.impl.presentation.screen.MovieDetailScreen
 import com.rappi.detail.impl.presentation.screen.destinations.MovieDetailScreenDestination
-import com.rappi.detail.impl.presentation.screen.destinations.TypedDestination
 import com.rappi.navigation.DestinationEntry
 import com.rappi.navigation.DestinationEntryKey
 import com.rappi.navigation.Destinations
@@ -48,7 +46,7 @@ class MovieDetailEntryImpl @Inject constructor() : MovieDetailEntry {
 
     override val destination: DestinationSpec<*> = MovieDetailScreenDestination
 
-    override fun direction(arg: Any?): Direction {
-        return MovieDetailScreenDestination.invoke(arg as? Int ?: 0)
+    override fun direction(bundle: Bundle?): Direction {
+        return MovieDetailScreenDestination.invoke(bundle?.getInt("id") ?: 0)
     }
 }

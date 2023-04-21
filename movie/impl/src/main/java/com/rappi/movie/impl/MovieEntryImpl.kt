@@ -1,7 +1,7 @@
 package com.rappi.movie.impl
 
+import android.os.Bundle
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import com.ramcosta.composedestinations.spec.DestinationSpec
@@ -36,8 +36,9 @@ class MovieEntryImpl @Inject constructor() : MovieEntry {
             MovieScreen(
                 onMovieItemClick = { id ->
                     navController.navigate(
-                        destinations.entry<MovieDetailEntry>().direction(id)
-                            .route
+                        destinations.entry<MovieDetailEntry>().direction(
+                            Bundle().apply { putInt("id", id) }
+                        ).route
                     )
                 }
             )
@@ -47,7 +48,7 @@ class MovieEntryImpl @Inject constructor() : MovieEntry {
 
     override val destination: DestinationSpec<*> = MovieScreenDestination
 
-    override fun direction(arg: Any?): Direction {
+    override fun direction(bundle: Bundle?): Direction {
         return MovieScreenDestination.invoke()
     }
 
